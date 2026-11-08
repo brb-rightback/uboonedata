@@ -28,7 +28,14 @@ which writes every ExtGen GiBUU card. Both tables record the full GiBUU build
   which each grid job sets GiBUU's equal-weights Max (3 x the largest of the
   neighbouring points, floor 50).
 
-All three come from `extgen_gibuu_tables.py` (then `extgen_make_splines.py`)
+* `gibuu_<version>_<commit7>.tar.gz`: the GiBUU build that grid jobs run
+  (`GiBUU.x`, its gfortran runtime libraries, `buuinput` and the ExtGen GiBUU
+  scripts; `make_gibuu_tarball.sh`), taken as
+  `extgen_gibuu_grid_init.sh --gibuu-tarball genie/gibuu/<file>.tar.gz
+  --gibuu-md5 <md5sum>`. The job checks the md5 and the build in its
+  `BUILD_INFO`.
+
+All three tables come from `extgen_gibuu_tables.py` (then `extgen_make_splines.py`)
 over the scan campaign; a grid job takes them as
 `extgen_gibuu_grid_init.sh --tables genie/gibuu/gibuu_<version>_<cardhash>`.
 
@@ -37,6 +44,17 @@ Current set: `gibuu_2025p5_516d3a20` (GiBUU a4dbdba, `GiBUU.x` md5 d8ea5b75;
 CC/NC x 16 targets). Per point: 2M trials for Ar40 nu_mu CC/NC, 500k for the
 other Ar40 channels and nu_mu CC/NC on Cr52, Fe56, Ni59, 20k for N14, K39 and
 the free neutron, 80k otherwise.
+
+Current tarball: `gibuu_2025p5_8cfc370.tar.gz` (md5
+a6850ad78fb521f701fc87c14235abc2): GiBUU Release 2025 patch 5, branch
+`v08_00_00_br` 8cfc370 (multi-run fix, random real-perturbative pairing and
+redraw after the just-collided veto), `GiBUU.x` md5 980db57e, card 25a5f19f,
+gcc 12.1.0, no ROOT. It is used with the 516d3a20 tables and
+`--allow-build-mismatch`: the tables come from build a4dbdba and card 516d3a20,
+and the later FSI and card changes do not affect them (the scans have no FSI
+time steps; checked against the patched standalone: numu CC 1.0045 +- 0.0022,
+NC 0.9995 +- 0.0020). Validated in the 260k-event run-4c production
+(2026-11-05).
 
 The cross sections must come from the same card as the production, with
 only the energy and target changed. Each production job checks them against

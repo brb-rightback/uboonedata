@@ -28,7 +28,13 @@ writes every ExtGen NuWro card. Both tables record the NuWro build (commit /
   largest of the neighbouring points; a channel without weight there stays
   closed).
 
-All three come from `extgen_nuwro_tables.py` (then `extgen_make_splines.py`)
+* `nuwro_<version>_<cardhash>.tar.gz`: the NuWro build that grid jobs run
+  (`bin/nuwro_extgen`, `data/`, `BUILD_INFO` and the ExtGen NuWro scripts;
+  `make_nuwro_tarball.sh`; ROOT and Pythia6 come from CVMFS as recorded in
+  `BUILD_INFO`), taken as `extgen_nuwro_grid_init.sh --nuwro-tarball
+  genie/nuwro/<file>.tar.gz --nuwro-md5 <md5sum>`.
+
+All three tables come from `extgen_nuwro_tables.py` (then `extgen_make_splines.py`)
 over the scan campaign; a grid job takes them as
 `extgen_nuwro_grid_init.sh --tables genie/nuwro/nuwro_<version>_<cardhash>`.
 
@@ -48,6 +54,12 @@ NC +13.2%; RES, DIS, COH and MEC unchanged (0.9998-1.0003). C12, O16 and Fe56
 change alike (total CC +6 to +7%); all other nuclei are unchanged within
 statistics. Job 349 uses seed 40349: its job-list seed hit the stock NuWro NC DIS
 crash (cos theta out of range in `disevent`).
+
+Current tarball: `nuwro_25_11_1_0fefd586.tar.gz` (md5
+d6cae3ca1ab0c99fb7a3fb99d427a29c): NuWro 25.11.1 branch `v08_00_00_br` 32065e3,
+`nuwro_extgen` md5 404327b3, card 0fefd586, built with gcc 12.1.0 against
+ROOT 6.28/12 and Pythia 6.4.28 (UPS e26). Validated in the run-4c production
+(1.85e20 POT, 2026-11-06) against stock NuWro with the same card.
 
 Previous set: `nuwro_25_11_1_595c318a` (NuWro 25.11.1 branch `v08_00_00_br`
 32065e3, `nuwro_extgen` md5 404327b3; 568 scan jobs, 2026-10-31). Same scan
