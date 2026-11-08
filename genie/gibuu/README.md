@@ -28,12 +28,13 @@ which writes every ExtGen GiBUU card. Both tables record the full GiBUU build
   which each grid job sets GiBUU's equal-weights Max (3 x the largest of the
   neighbouring points, floor 50).
 
-* `gibuu_<version>_<commit7>.tar.gz`: the GiBUU build that grid jobs run
-  (`GiBUU.x`, its gfortran runtime libraries, `buuinput` and the ExtGen GiBUU
-  scripts; `make_gibuu_tarball.sh`), taken as
-  `extgen_gibuu_grid_init.sh --gibuu-tarball genie/gibuu/<file>.tar.gz
-  --gibuu-md5 <md5sum>`. The job checks the md5 and the build in its
-  `BUILD_INFO`.
+The GiBUU build that grid jobs run, `gibuu_<version>_<commit7>.tar.gz`
+(`GiBUU.x`, its gfortran runtime libraries, `buuinput` and the ExtGen GiBUU
+scripts; `make_gibuu_tarball.sh`), is too large for uboonedata. It is stored in
+`/pnfs/uboone/persistent/users/uboonepro/ExtGen`; copy it to a resilient area and pass it with
+jobsub -f (`extgen_gibuu_grid_init.sh --gibuu-tarball <resilient path>
+--gibuu-md5 <md5sum>`, as the ubsim/ExtGen xml templates do). The job checks the
+md5 and the build in its `BUILD_INFO`.
 
 All three tables come from `extgen_gibuu_tables.py` (then `extgen_make_splines.py`)
 over the scan campaign; a grid job takes them as
@@ -45,7 +46,7 @@ CC/NC x 16 targets). Per point: 2M trials for Ar40 nu_mu CC/NC, 500k for the
 other Ar40 channels and nu_mu CC/NC on Cr52, Fe56, Ni59, 20k for N14, K39 and
 the free neutron, 80k otherwise.
 
-Current tarball: `gibuu_2025p5_8cfc370.tar.gz` (md5
+Current tarball (in the persistent area above): `gibuu_2025p5_8cfc370.tar.gz` (md5
 a6850ad78fb521f701fc87c14235abc2): GiBUU Release 2025 patch 5, branch
 `v08_00_00_br` 8cfc370 (multi-run fix, random real-perturbative pairing and
 redraw after the just-collided veto), `GiBUU.x` md5 980db57e, card 25a5f19f,
