@@ -40,45 +40,36 @@ All three tables come from `extgen_nuwro_tables.py` (then `extgen_make_splines.p
 over the scan campaign; a grid job takes them as
 `extgen_nuwro_grid_init.sh --tables genie/nuwro/nuwro_<version>_<cardhash>`.
 
-Physics: the NuWro MicroBooNE BNB card, with QEL in the local Fermi gas
-(`sf_method = 0`) for every nucleus. Sets up to 595c318a used NuWro's QEL
-spectral function for C12, O16, Ar40 and Fe56. NaN weights (rare, hybrid RES
-model for antineutrinos) are discarded as stock NuWro does, so the cross
-sections are those NuWro itself reports.
+Two table sets, from the same NuWro build and differing only in the QEL model:
 
-Current set: `nuwro_25_11_1_0fefd586` (NuWro 25.11.1 branch `v08_00_00_br`
-32065e3, `nuwro_extgen` md5 404327b3; 568 scan jobs, 2026-11-05). Same scan
-design as below. Card change: QEL local Fermi gas instead of the spectral
-function for C12, O16, Ar40 and Fe56 (the NuWro spectral function gives less QEL
-and, oddly, less FSI than LFG; `nuwroval/sf_vs_lfg` in the development area).
-Ar40 nu_mu, BNB flux averaged: CC QEL +16.3%, NC QEL +26.6%, total CC +9.0%,
-NC +13.2%; RES, DIS, COH and MEC unchanged (0.9998-1.0003). C12, O16 and Fe56
-change alike (total CC +6 to +7%); all other nuclei are unchanged within
-statistics. Job 349 uses seed 40349: its job-list seed hit the stock NuWro NC DIS
-crash (cos theta out of range in `disevent`).
+| set | QEL model | card | tarball (in the persistent area above) | use |
+|---|---|---|---|---|
+| `nuwro_25_11_1_0fefd586` | local Fermi gas (LFG), `sf_method = 0` for every nucleus | `extgen_nuwro_card.sh` md5 0fefd586 (ubsim b798379d, current) | `nuwro_25_11_1_0fefd586.tar.gz`, md5 d6cae3ca1ab0c99fb7a3fb99d427a29c | production (current) |
+| `nuwro_25_11_1_595c318a` | spectral function (SF), `sf_method = 1` for C12, O16, Ar40, Fe56 (LFG elsewhere) | md5 595c318a (ubsim 5544a4de) | `nuwro_25_11_1_595c318a.tar.gz`, md5 4da72f88e63a67f8100c50251c38a334 | kept for comparisons |
 
-Current tarball (in the persistent area above): `nuwro_25_11_1_0fefd586.tar.gz` (md5
-d6cae3ca1ab0c99fb7a3fb99d427a29c): NuWro 25.11.1 branch `v08_00_00_br` 32065e3,
-`nuwro_extgen` md5 404327b3, card 0fefd586, built with gcc 12.1.0 against
-ROOT 6.28/12 and Pythia 6.4.28 (UPS e26). Validated in the run-4c production
-(1.85e20 POT, 2026-11-06) against stock NuWro with the same card.
+The grid jobs check that the tables' card md5 equals that of the `extgen_nuwro_card.sh` installed with ubsim,
+so the SF set only works with the SF card (ubsim 5544a4de) and its tarball (the tarball carries the same card).
 
-Previous set: `nuwro_25_11_1_595c318a` (NuWro 25.11.1 branch `v08_00_00_br`
-32065e3, `nuwro_extgen` md5 404327b3; 568 scan jobs, 2026-10-31). Same scan
-design as the set below. Card changes: NC `mec_kind = 1` (TEM, NuWro's only NC
-MEC model; the previous set had no NC MEC) and NC `spp_precision = 8000` (CC stays
-at 2000, converged). Ar40 nu_mu NC, BNB flux averaged: total +12.0%, RES -3.1%,
-new MEC 0.029e-38 cm^2 per nucleon. CC is unchanged, 0.999-1.001. Jobs 75, 120 and
-236 use seeds 20075, 20120 and 20236: their job-list seeds hit a stock NuWro crash
-(job 75: NC DIS, cos theta out of range in `disevent`).
+Scan design (both sets): 568 scan jobs, 62 energies 0.01-8 GeV, 128 channels (4 flavours x CC/NC x 16 targets).
+Trials per point and NuWro channel: 3.2M for Ar40 nu_mu CC/NC, 800k for the other Ar40 channels and nu_mu CC/NC
+on Cr52, Fe56, Ni59, 200k for N14, K39 and the free neutron, 400k otherwise. Relative error of sigma at most 0.7%
+from 0.2 GeV up. NuWro 25.11.1 branch `v08_00_00_br` 32065e3, `nuwro_extgen` md5 404327b3, gcc 12.1.0,
+ROOT 6.28/12, Pythia 6.4.28 (UPS e26).
 
-Older set: `nuwro_25_11_1_0bbe5a54` (NuWro 25.11.1 branch `v08_00_00_br`
-32065e3, `nuwro_extgen` md5 404327b3; 568 scan jobs, 2026-10-28): 62 energies
-0.01-8 GeV, 128 channels (4 flavours x CC/NC x 16 targets). Trials per point
-and NuWro channel: 3.2M for Ar40 nu_mu CC/NC, 800k for the other Ar40
-channels and nu_mu CC/NC on Cr52, Fe56, Ni59, 200k for N14, K39 and the free
-neutron, 400k otherwise. Relative error of sigma at most 0.7% from 0.2 GeV up.
+Physics (both): the NuWro MicroBooNE BNB card; NC MEC with `mec_kind = 1` (TEM, NuWro's only NC MEC model),
+CC MEC 2020 Valencia; `spp_precision` 2000 (CC) and 8000 (NC). NaN weights (rare, hybrid RES model for
+antineutrinos) are discarded as stock NuWro does, so the cross sections are those NuWro itself reports.
 
-The cross sections must come from the same card as the production, with
-only the energy and target changed. Each production job checks them against
-NuWro's own trial statistics.
+LFG set, `nuwro_25_11_1_0fefd586` (2026-11-05): QEL in the local Fermi gas instead of the spectral function for
+C12, O16, Ar40 and Fe56 (the NuWro spectral function gives less QEL and, oddly, less FSI than LFG;
+`nuwroval/sf_vs_lfg` in the development area). Against the SF set, Ar40 nu_mu, BNB flux averaged: CC QEL +16.3%,
+NC QEL +26.6%, total CC +9.0%, NC +13.2%; RES, DIS, COH and MEC unchanged (0.9998-1.0003). C12, O16 and Fe56
+change alike (total CC +6 to +7%); all other nuclei are unchanged within statistics. Job 349 uses seed 40349:
+its job-list seed hit the stock NuWro NC DIS crash (cos theta out of range in `disevent`). Validated in the
+run-4c production (1.85e20 POT, 2026-11-06) against stock NuWro with the same card.
+
+SF set, `nuwro_25_11_1_595c318a` (2026-10-31): QEL spectral function for C12, O16, Ar40 and Fe56. Compared with
+the first SF set (0bbe5a54, removed), NC MEC (TEM; that set had none) and NC `spp_precision = 8000`: Ar40 nu_mu
+NC, BNB flux averaged, total +12.0%, RES -3.1%, MEC 0.029e-38 cm^2 per nucleon; CC unchanged. Jobs 75, 120 and
+236 use seeds 20075, 20120 and 20236: their job-list seeds hit a stock NuWro crash (job 75: NC DIS, cos theta out
+of range in `disevent`; 120 and 236: a hang in the spectral-function sampling).
